@@ -58,8 +58,8 @@
     <!-- 模拟一个打鼓的页面。用户在键盘上按下 ASDFGHJKL 这几个键时，页面上与字母对应的按钮变大变亮，对应的鼓点声音响起来。 -->
     <script>
       // 首先，当用户按下 对应的键时，页面上对应的按钮变大，变亮，对应的鼓点声音响起
-      window.addEventListener("keydown", function keyEvent(event) {
-        console.log(`Location of key pressed: ${event.key.toUpperCase()}`);
+      window.addEventListener("keydown", (event) => {
+        // console.log(`Location of key pressed: ${event.key.toUpperCase()}`);
         const keys = document.getElementById(`${event.key.toUpperCase()}`);
         const audios = document.getElementById(
           `audio-${event.key.toUpperCase()}`
