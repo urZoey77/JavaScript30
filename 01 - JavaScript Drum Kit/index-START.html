@@ -1,67 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>JS Drum Kit</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="https://fav.farm/🔥" />
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>JS Drum Kit</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="https://fav.farm/🔥" />
+  </head>
+  <body>
+    <div class="keys">
+      <div data-key="65" id="A" class="key">
+        <kbd>A</kbd>
+        <span class="sound">clap</span>
+      </div>
+      <div data-key="83" id="S" class="key">
+        <kbd>S</kbd>
+        <span class="sound">hihat</span>
+      </div>
+      <div data-key="68" id="D" class="key">
+        <kbd>D</kbd>
+        <span class="sound">kick</span>
+      </div>
+      <div data-key="70" id="F" class="key">
+        <kbd>F</kbd>
+        <span class="sound">openhat</span>
+      </div>
+      <div data-key="71" id="G" class="key">
+        <kbd>G</kbd>
+        <span class="sound">boom</span>
+      </div>
+      <div data-key="72" id="H" class="key">
+        <kbd>H</kbd>
+        <span class="sound">ride</span>
+      </div>
+      <div data-key="74" id="J" class="key">
+        <kbd>J</kbd>
+        <span class="sound">snare</span>
+      </div>
+      <div data-key="75" id="K" class="key">
+        <kbd>K</kbd>
+        <span class="sound">tom</span>
+      </div>
+      <div data-key="76" id="L" class="key">
+        <kbd>L</kbd>
+        <span class="sound">tink</span>
+      </div>
+    </div>
 
-
-  <div class="keys">
-    <div data-key="65" class="key">
-      <kbd>A</kbd>
-      <span class="sound">clap</span>
-    </div>
-    <div data-key="83" class="key">
-      <kbd>S</kbd>
-      <span class="sound">hihat</span>
-    </div>
-    <div data-key="68" class="key">
-      <kbd>D</kbd>
-      <span class="sound">kick</span>
-    </div>
-    <div data-key="70" class="key">
-      <kbd>F</kbd>
-      <span class="sound">openhat</span>
-    </div>
-    <div data-key="71" class="key">
-      <kbd>G</kbd>
-      <span class="sound">boom</span>
-    </div>
-    <div data-key="72" class="key">
-      <kbd>H</kbd>
-      <span class="sound">ride</span>
-    </div>
-    <div data-key="74" class="key">
-      <kbd>J</kbd>
-      <span class="sound">snare</span>
-    </div>
-    <div data-key="75" class="key">
-      <kbd>K</kbd>
-      <span class="sound">tom</span>
-    </div>
-    <div data-key="76" class="key">
-      <kbd>L</kbd>
-      <span class="sound">tink</span>
-    </div>
-  </div>
-
-  <audio data-key="65" src="sounds/clap.wav"></audio>
-  <audio data-key="83" src="sounds/hihat.wav"></audio>
-  <audio data-key="68" src="sounds/kick.wav"></audio>
-  <audio data-key="70" src="sounds/openhat.wav"></audio>
-  <audio data-key="71" src="sounds/boom.wav"></audio>
-  <audio data-key="72" src="sounds/ride.wav"></audio>
-  <audio data-key="74" src="sounds/snare.wav"></audio>
-  <audio data-key="75" src="sounds/tom.wav"></audio>
-  <audio data-key="76" src="sounds/tink.wav"></audio>
-
-<script>
-
-</script>
-
-
-</body>
+    <audio data-key="65" id="audio-A" src="sounds/clap.wav"></audio>
+    <audio data-key="83" id="audio-S" src="sounds/hihat.wav"></audio>
+    <audio data-key="68" id="audio-D" src="sounds/kick.wav"></audio>
+    <audio data-key="70" id="audio-F" src="sounds/openhat.wav"></audio>
+    <audio data-key="71" id="audio-G" src="sounds/boom.wav"></audio>
+    <audio data-key="72" id="audio-H" src="sounds/ride.wav"></audio>
+    <audio data-key="74" id="audio-J" src="sounds/snare.wav"></audio>
+    <audio data-key="75" id="audio-K" src="sounds/tom.wav"></audio>
+    <audio data-key="76" id="audio-L" src="sounds/tink.wav"></audio>
+    <!-- 模拟一个打鼓的页面。用户在键盘上按下 ASDFGHJKL 这几个键时，页面上与字母对应的按钮变大变亮，对应的鼓点声音响起来。 -->
+    <script>
+      // 首先，当用户按下 对应的键时，页面上对应的按钮变大，变亮，对应的鼓点声音响起
+      window.addEventListener("keydown", function keyEvent(event) {
+        console.log(`Location of key pressed: ${event.key.toUpperCase()}`);
+        const keys = document.getElementById(`${event.key.toUpperCase()}`);
+        const audios = document.getElementById(
+          `audio-${event.key.toUpperCase()}`
+        );
+        console.log(audios);
+        if (keys.firstElementChild.innerText === event.key.toUpperCase()) {
+          keys.classList.add("playing");
+          audios.currentTime = 0;
+          audios.play();
+          setTimeout(() => {
+            keys.classList.remove("playing");
+          }, 150);
+        }
+      });
+    </script>
+  </body>
 </html>
