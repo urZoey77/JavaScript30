@@ -1,75 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>JS + CSS Clock</title>
-  <link rel="icon" href="https://fav.farm/🔥" />
-</head>
-<body>
-
-
+  <head>
+    <meta charset="UTF-8" />
+    <title>JS + CSS Clock</title>
+    <link rel="icon" href="https://fav.farm/🔥" />
+  </head>
+  <body>
     <div class="clock">
       <div class="clock-face">
         <div class="hand hour-hand"></div>
         <div class="hand min-hand"></div>
         <div class="hand second-hand"></div>
+        <svg
+          class="clock-heart"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle cx="10" cy="10" r="10" />
+        </svg>
       </div>
     </div>
 
+    <style>
+      html {
+        background: #018ded url(https://unsplash.it/1500/1000?image=881&blur=5);
+        background-size: cover;
+        font-family: "helvetica neue";
+        text-align: center;
+        font-size: 10px;
+      }
 
-  <style>
-    html {
-      background: #018DED url(https://unsplash.it/1500/1000?image=881&blur=5);
-      background-size: cover;
-      font-family: 'helvetica neue';
-      text-align: center;
-      font-size: 10px;
-    }
+      body {
+        margin: 0;
+        font-size: 2rem;
+        display: flex;
+        flex: 1;
+        min-height: 100vh;
+        align-items: center;
+      }
 
-    body {
-      margin: 0;
-      font-size: 2rem;
-      display: flex;
-      flex: 1;
-      min-height: 100vh;
-      align-items: center;
-    }
+      .clock {
+        width: 30rem;
+        height: 30rem;
+        border: 20px solid white;
+        border-radius: 50%;
+        margin: 50px auto;
+        position: relative;
+        padding: 2rem;
+        box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.1), inset 0 0 0 3px #efefef,
+          inset 0 0 10px black, 0 0 10px rgba(0, 0, 0, 0.2);
+      }
 
-    .clock {
-      width: 30rem;
-      height: 30rem;
-      border: 20px solid white;
-      border-radius: 50%;
-      margin: 50px auto;
-      position: relative;
-      padding: 2rem;
-      box-shadow:
-        0 0 0 4px rgba(0,0,0,0.1),
-        inset 0 0 0 3px #EFEFEF,
-        inset 0 0 10px black,
-        0 0 10px rgba(0,0,0,0.2);
-    }
+      .clock-face {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transform: translateY(
+          -3px
+        ); /* account for the height of the clock hands */
+      }
 
-    .clock-face {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      transform: translateY(-3px); /* account for the height of the clock hands */
-    }
+      .clock-heart {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 20px;
+        height: 20px;
+        z-index: 100;
+      }
 
-    .hand {
-      width: 50%;
-      height: 6px;
-      background: black;
-      position: absolute;
-      top: 50%;
-    }
+      .hand {
+        position: absolute;
+        top: 50%;
+        transform-origin: right;
+        animation-timing-function: linear;
+        animation-name: handMove;
+        animation-iteration-count: infinite;
+      }
 
-  </style>
+      @keyframes handMove {
+        0% {
+          transform: rotate(90deg);
+        }
+        100% {
+          transform: rotate(450deg);
+        }
+      }
 
-  <script>
+      .hour-hand {
+        /* animation-name: handMove; */
+        background: #f50000;
+        position: absolute;
+        left: 20%;
+        width: 30%;
+        height: 6px;
+        border-radius: 6px;
+        animation-duration: 43200s;
+        animation-timing-function: steps(12, jump-end);
+      }
 
+      .min-hand {
+        /* animation-name: handMove; */
+        background: #ffff00a9;
+        width: 50%;
+        height: 6px;
+        animation-duration: 3600s;
+        animation-timing-function: steps(60, jump-end);
+      }
 
-  </script>
-</body>
+      .second-hand {
+        /* animation-name: handMove; */
+        background: #40ff00;
+        width: 50%;
+        height: 5px;
+        animation-duration: 60s;
+        animation-timing-function: steps(60, jump-end);
+        clip-path: polygon(0% 50%, 30% 0%, 100% 0%, 100% 100%, 30% 100%);
+      }
+    </style>
+
+    <script>
+      const hourHand = document.querySelector(".hour-hand");
+      const minHand = document.querySelector(".min-hand");
+      const secondHand = document.querySelector(".second-hand");
+
+      const now = new Date();
+      const curHour = new Date().getHours() % 12;
+      const curMin = new Date().getMinutes();
+      const curSec = new Date().getSeconds();
+
+      const secDealy = curSec;
+      secondHand.style.animationDelay = `-${secDealy}s`;
+
+      const minDelay = curMin * 60 + curSec;
+      minHand.style.animationDelay = `-${minDelay}s`;
+
+      const hourDelay = curHour * 3600 + curMin * 60 + curSec;
+      hourHand.style.animationDelay = `-${hourDelay}s`;
+    </script>
+  </body>
 </html>
