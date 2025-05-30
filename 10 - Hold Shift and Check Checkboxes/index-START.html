@@ -1,102 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Hold Shift to Check Multiple Checkboxes</title>
-  <link rel="icon" href="https://fav.farm/🔥" />
-</head>
-<body>
-  <style>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hold Shift to Check Multiple Checkboxes</title>
+    <link rel="icon" href="https://fav.farm/🔥" />
+  </head>
+  <body>
+    <style>
+      html {
+        font-family: sans-serif;
+        background: #ffc600;
+      }
 
-    html {
-      font-family: sans-serif;
-      background: #ffc600;
-    }
+      .inbox {
+        max-width: 400px;
+        margin: 50px auto;
+        background: white;
+        border-radius: 5px;
+        box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.1);
+      }
 
-    .inbox {
-      max-width: 400px;
-      margin: 50px auto;
-      background: white;
-      border-radius: 5px;
-      box-shadow: 10px 10px 0 rgba(0,0,0,0.1);
-    }
+      .item {
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #f1f1f1;
+      }
 
-    .item {
-      display: flex;
-      align-items: center;
-      border-bottom: 1px solid #F1F1F1;
-    }
+      .item:last-child {
+        border-bottom: 0;
+      }
 
-    .item:last-child {
-      border-bottom: 0;
-    }
+      input:checked + p {
+        background: #f9f9f9;
+        text-decoration: line-through;
+      }
 
-    input:checked + p {
-      background: #F9F9F9;
-      text-decoration: line-through;
-    }
+      input[type="checkbox"] {
+        margin: 20px;
+      }
 
-    input[type="checkbox"] {
-      margin: 20px;
-    }
-
-    p {
-      margin: 0;
-      padding: 20px;
-      transition: background 0.2s;
-      flex: 1;
-      font-family:'helvetica neue';
-      font-size: 20px;
-      font-weight: 200;
-      border-left: 1px solid #D1E2FF;
-    }
-  </style>
-   <!--
+      p {
+        margin: 0;
+        padding: 20px;
+        transition: background 0.2s;
+        flex: 1;
+        font-family: "helvetica neue";
+        font-size: 20px;
+        font-weight: 200;
+        border-left: 1px solid #d1e2ff;
+      }
+    </style>
+    <!--
    The following is a common layout you would see in an email client.
 
    When a user clicks a checkbox, holds Shift, and then clicks another checkbox a few rows down, all the checkboxes inbetween those two checkboxes should be checked.
 
   -->
-  <div class="inbox">
-    <div class="item">
-      <input type="checkbox">
-      <p>This is an inbox layout.</p>
+    <div class="inbox">
+      <div class="item">
+        <input type="checkbox" />
+        <p>This is an inbox layout.</p>
+      </div>
+      <div class="item">
+        <input type="checkbox" />
+        <p>Check one item</p>
+      </div>
+      <div class="item">
+        <input type="checkbox" />
+        <p>Hold down your Shift key</p>
+      </div>
+      <div class="item">
+        <input type="checkbox" />
+        <p>Check a lower item</p>
+      </div>
+      <div class="item">
+        <input type="checkbox" />
+        <p>Everything in between should also be set to checked</p>
+      </div>
+      <div class="item">
+        <input type="checkbox" />
+        <p>Try to do it without any libraries</p>
+      </div>
+      <div class="item">
+        <input type="checkbox" />
+        <p>Just regular JavaScript</p>
+      </div>
+      <div class="item">
+        <input type="checkbox" />
+        <p>Good Luck!</p>
+      </div>
+      <div class="item">
+        <input type="checkbox" />
+        <p>Don't forget to tweet your result!</p>
+      </div>
     </div>
-    <div class="item">
-      <input type="checkbox">
-      <p>Check one item</p>
-    </div>
-    <div class="item">
-      <input type="checkbox">
-      <p>Hold down your Shift key</p>
-    </div>
-    <div class="item">
-      <input type="checkbox">
-      <p>Check a lower item</p>
-    </div>
-    <div class="item">
-      <input type="checkbox">
-      <p>Everything in between should also be set to checked</p>
-    </div>
-    <div class="item">
-      <input type="checkbox">
-      <p>Try to do it without any libraries</p>
-    </div>
-    <div class="item">
-      <input type="checkbox">
-      <p>Just regular JavaScript</p>
-    </div>
-    <div class="item">
-      <input type="checkbox">
-      <p>Good Luck!</p>
-    </div>
-    <div class="item">
-      <input type="checkbox">
-      <p>Don't forget to tweet your result!</p>
-    </div>
-  </div>
 
-<script>
-</script>
-</body>
+    <script>
+      // 第一步先实现在两个勾选框之间的多选
+
+      // 获取所有勾选框的父元素 item
+
+      // 判断这个input的位置在第几个item里
+      // 监听inbox 当发生change且这个change源自于input type=checked时候
+      let shiftPress;
+      window.addEventListener("keydown", (e) =>
+        e.shiftKey ? (shiftPress = true) : (shiftPress = false)
+      );
+      window.addEventListener("keyup", (e) => (shiftPress = false));
+
+      const inbox = document.querySelector(".inbox");
+
+      inbox.addEventListener("change", (event) => {
+        // 获取已经被勾选的 input
+        const lastChecked = document.querySelector(
+          'input[type="checkbox"]:checked'
+        );
+        console.log(lastChecked);
+        if (shiftPress && event.target.matches(`input[type="checkbox"]`)) {
+          if (event.target.checked) {
+            const items = document.querySelectorAll(".item");
+            console.log(items);
+            let startIndex, endIndex;
+            let checkedIndex, targetIndex;
+            items.forEach((element, index) => {
+              if (lastChecked === element.firstElementChild) {
+                checkedIndex = index;
+                console.log("checkedIndex >>>", checkedIndex);
+              }
+              if (event.target === element.firstElementChild) {
+                targetIndex = index;
+                console.log("targetIndex >>> ", targetIndex);
+              }
+            });
+            targetIndex < checkedIndex
+              ? ([startIndex, endIndex] = [targetIndex, checkedIndex])
+              : ([startIndex, endIndex] = [checkedIndex, targetIndex]);
+            console.log("startIndex >>> ", startIndex);
+            console.log("endIndex >>> ", endIndex);
+
+            for (i = startIndex + 1; i < endIndex; i++) {
+              console.log("for i>>>", items[i]);
+              items[i].firstElementChild.checked = true;
+            }
+          }
+        }
+      });
+      // 判断这个input在最后一个被勾选的input前还是后，在前面的input开始到后面的input之间的都勾选
+    </script>
+  </body>
 </html>
