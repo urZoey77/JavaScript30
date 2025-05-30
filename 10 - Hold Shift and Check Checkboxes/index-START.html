@@ -103,31 +103,35 @@
       // 判断这个input的位置在第几个item里
       // 监听inbox 当发生change且这个change源自于input type=checked时候
       let shiftPress;
+
       window.addEventListener("keydown", (e) =>
         e.shiftKey ? (shiftPress = true) : (shiftPress = false)
       );
       window.addEventListener("keyup", (e) => (shiftPress = false));
 
       const inbox = document.querySelector(".inbox");
-
+      let lastChecked = null;
       inbox.addEventListener("change", (event) => {
         // 获取已经被勾选的 input
-        const lastChecked = document.querySelector(
-          'input[type="checkbox"]:checked'
-        );
-        console.log(lastChecked);
+        if (!shiftPress && event.target.matches(`input[type="checkbox"]`)) {
+          lastChecked = event.target;
+          console.log("lastChecked", lastChecked);
+        }
+
         if (shiftPress && event.target.matches(`input[type="checkbox"]`)) {
           if (event.target.checked) {
-            const items = document.querySelectorAll(".item");
-            console.log(items);
+            const inputBoxes = document.querySelectorAll(
+              `input[type="checkbox"]`
+            );
+            console.log(inputBoxes);
             let startIndex, endIndex;
             let checkedIndex, targetIndex;
-            items.forEach((element, index) => {
-              if (lastChecked === element.firstElementChild) {
+            inputBoxes.forEach((element, index) => {
+              if (lastChecked === element) {
                 checkedIndex = index;
                 console.log("checkedIndex >>>", checkedIndex);
               }
-              if (event.target === element.firstElementChild) {
+              if (event.target === element) {
                 targetIndex = index;
                 console.log("targetIndex >>> ", targetIndex);
               }
@@ -138,9 +142,9 @@
             console.log("startIndex >>> ", startIndex);
             console.log("endIndex >>> ", endIndex);
 
-            for (i = startIndex + 1; i < endIndex; i++) {
-              console.log("for i>>>", items[i]);
-              items[i].firstElementChild.checked = true;
+            for (i = startIndex; i <= endIndex; i++) {
+              console.log("for i>>>", inputBoxes[i]);
+              inputBoxes[i].checked = true;
             }
           }
         }
