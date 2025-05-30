@@ -115,7 +115,6 @@
         // 获取已经被勾选的 input
         if (!shiftPress && event.target.matches(`input[type="checkbox"]`)) {
           lastChecked = event.target;
-          console.log("lastChecked", lastChecked);
         }
 
         if (shiftPress && event.target.matches(`input[type="checkbox"]`)) {
@@ -123,33 +122,26 @@
             const inputBoxes = document.querySelectorAll(
               `input[type="checkbox"]`
             );
-            console.log(inputBoxes);
             let startIndex, endIndex;
             let checkedIndex, targetIndex;
             inputBoxes.forEach((element, index) => {
               if (lastChecked === element) {
                 checkedIndex = index;
-                console.log("checkedIndex >>>", checkedIndex);
               }
               if (event.target === element) {
                 targetIndex = index;
-                console.log("targetIndex >>> ", targetIndex);
               }
             });
             targetIndex < checkedIndex
               ? ([startIndex, endIndex] = [targetIndex, checkedIndex])
               : ([startIndex, endIndex] = [checkedIndex, targetIndex]);
-            console.log("startIndex >>> ", startIndex);
-            console.log("endIndex >>> ", endIndex);
 
             for (i = startIndex; i <= endIndex; i++) {
-              console.log("for i>>>", inputBoxes[i]);
               inputBoxes[i].checked = true;
             }
           }
         }
       });
-      // 判断这个input在最后一个被勾选的input前还是后，在前面的input开始到后面的input之间的都勾选
     </script>
   </body>
 </html>
