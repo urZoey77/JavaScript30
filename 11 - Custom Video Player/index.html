@@ -1,28 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>HTML Video Player</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="https://fav.farm/🔥" />
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>HTML Video Player</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="https://fav.farm/🔥" />
+  </head>
+  <body>
+    <div class="player">
+      <video class="player__video viewer" src="652333414.mp4"></video>
 
-   <div class="player">
-     <video class="player__video viewer" src="652333414.mp4"></video>
+      <div class="player__controls">
+        <div class="progress">
+          <div class="progress__filled"></div>
+        </div>
 
-     <div class="player__controls">
-       <div class="progress">
-        <div class="progress__filled"></div>
-       </div>
-       <button class="player__button toggle" title="Toggle Play">►</button>
-       <input type="range" name="volume" class="player__slider" min="0" max="1" step="0.05" value="1">
-       <input type="range" name="playbackRate" class="player__slider" min="0.5" max="2" step="0.1" value="1">
-       <button data-skip="-10" class="player__button">« 10s</button>
-       <button data-skip="25" class="player__button">25s »</button>
-     </div>
-   </div>
+        <!-- 播放视频按钮 -->
+        <button class="player__button toggle" title="Toggle Play">►</button>
+        <!-- 音量滑动条 -->
+        <input
+          type="range"
+          name="volume"
+          class="player__slider"
+          min="0"
+          max="1"
+          step="0.05"
+          value="1"
+        />
+        <!-- 播放速度滑动条 -->
+        <input
+          type="range"
+          name="playbackRate"
+          class="player__slider"
+          min="0.5"
+          max="2"
+          step="0.1"
+          value="1"
+        />
+        <!-- 往前跳10s和往后跳25s按钮 -->
+        <button data-skip="-10" class="player__button">« 10s</button>
+        <button data-skip="25" class="player__button">25s »</button>
+      </div>
+    </div>
 
-  <script src="scripts.js"></script>
-</body>
+    <!-- <script src="scripts-FINISHED.js"></script> -->
+    <script>
+      const video = document.querySelector("video");
+      console.log(video);
+      let videoDuration, defaultProgressLength;
+      video.addEventListener("loadedmetadata", () => {
+        videoDuration = video.duration;
+        defaultProgressLength = progressBar.offsetWidth;
+        console.log(videoDuration);
+      });
+
+      // 1. 实现点击播放视频
+      // 当click player__button 的时候，在播放和暂停中切换 -> 先判断视频的状态
+      const playerToggleButton = document.querySelector(
+        'button[title="Toggle Play"]'
+      );
+      document.addEventListener("click", (e) => {
+        if (e.target === video || e.target === playerToggleButton) {
+          if (video.paused) {
+            video.play();
+            playerToggleButton.innerText = "❚ ❚";
+          } else {
+            video.pause();
+            playerToggleButton.innerText = "►";
+          }
+        }
+      });
+
+      // 2. 实现点击往前跳10s和往后跳25s
+      const reduce10s = document.querySelector('button[data-skip="-10"]');
+      const add25s = document.querySelector('button[data-skip="25"]');
+
+      document.addEventListener("click", (e) => {
+        if (e.target === reduce10s || e.target === add25s) {
+          video.currentTime =
+            video.currentTime + parseFloat(e.target.dataset.skip);
+        }
+      });
+
+      // 3. 控制音量
+      const volumeSilder = document.querySelector('input[name="volume"]');
+      volumeSilder.addEventListener("input", () => {
+        video.volume = volumeSilder.value;
+      });
+
+      // 4. 控制播放速度
+      const playbackRateSilder = document.querySelector(
+        'input[name="playbackRate"]'
+      );
+      playbackRateSilder.addEventListener("input", () => {
+        video.playbackRate = playbackRateSilder.value;
+      });
+
+      //5. 播放进度条 - 根据当前播放时长展示 / 通过单击或拖拽改变进度
+      //  根据当前播放时长展示
+      const progressBar = document.querySelector(".progress__filled");
+      let clickPosition;
+      video.addEventListener("timeupdate", () => {
+        const playPercent = (video.currentTime / videoDuration) * 100;
+        progressBar.style.width = `${playPercent}%`;
+      });
+
+      //  单击：拖动条到鼠标的位置，视频进度
+      function handleProgress(e) {
+        clickPosition = e.offsetX / defaultProgressLength;
+        progressBar.style.width = `${clickPosition * 100}%`;
+        video.currentTime = parseFloat(clickPosition * defaultProgressLength);
+      }
+      const progressControl = document.querySelector(".player__controls");
+      progressControl.addEventListener("click", handleProgress);
+
+      //  拖动：拖动条到鼠标的位置，视频进度
+      progressControl.addEventListener("mousedown", (e) => {
+        document.addEventListener("mousemove", handleProgress);
+        document.addEventListener("mouseup", (e) => {
+          document.removeEventListener("mousemove", handleProgress);
+        });
+      });
+    </script>
+  </body>
 </html>
