@@ -7,6 +7,17 @@
     <link rel="icon" href="https://fav.farm/🔥" />
   </head>
   <body>
-    <script></script>
+    <script>
+      const secretCode = "zoey77";
+      const inputArr = [];
+      document.addEventListener("keydown", (e) => {
+        inputArr.push(`${e.key}`);
+        console.log(inputArr);
+        if (RegExp(secretCode).test(inputArr.join(""))) {
+          cornify_add();
+          inputArr.splice(0, inputArr.length);
+        }
+      });
+    </script>
   </body>
 </html>
