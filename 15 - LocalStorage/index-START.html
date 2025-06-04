@@ -61,21 +61,25 @@
 
       function loadingList() {
         const eleItems = items.map((inputValue, index) => {
-          if (inputValue.done) {
-            return `
+          // if (inputValue.done) {
+          console.log(items);
+
+          return `
           <li>
-            <input type="checkbox" id="${index}" value=${inputValue.text} checked/>
+            <input type="checkbox" id="${index}" value=${inputValue.text} ${
+            inputValue.done ? "checked" : ""
+          }/>
             <label for="${index}">${inputValue.text}</label>
           </li>`;
-          } else {
-            return `
-          <li>
-            <input type="checkbox" id="${index}" value=${inputValue.text}/>
-            <label for="${index}">${inputValue.text}</label>
-          </li>`;
-          }
+          //   } else {
+          //     return `
+          //   <li>
+          //     <input type="checkbox" id="${index}" value=${inputValue.text}/>
+          //     <label for="${index}">${inputValue.text}</label>
+          //   </li>`;
+          //   }
         });
-        if (eleItems.length != 0) {
+        if (eleItems.length) {
           itemsList.innerHTML = "";
           eleItems.forEach((ele) => {
             itemsList.insertAdjacentHTML("beforeend", ele);
@@ -98,7 +102,7 @@
 
       itemsList.addEventListener("input", (e) => {
         console.log(e.target);
-        items[e.target.id].done = true;
+        items[e.target.id].done = !items[e.target.id].done;
         localStorage.setItem("items", JSON.stringify(items));
         console.log(localStorage);
       });
