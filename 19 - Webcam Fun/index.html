@@ -1,46 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Get User Media Code Along!</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="https://fav.farm/🔥" />
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Get User Media Code Along!</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="https://fav.farm/🔥" />
+  </head>
+  <body>
+    <div class="photobooth">
+      <div class="controls">
+        <button onClick="takePhoto()">Take Photo</button>
+        <!-- <div class="rgb">
+          <label for="rmin">Red Min:</label>
+          <input type="range" min="0" max="255" name="rmin" />
+          <label for="rmax">Red Max:</label>
+          <input type="range" min="0" max="255" name="rmax" />
 
-  <div class="photobooth">
-    <div class="controls">
-      <button onClick="takePhoto()">Take Photo</button>
-<!--       <div class="rgb">
-        <label for="rmin">Red Min:</label>
-        <input type="range" min=0 max=255 name="rmin">
-        <label for="rmax">Red Max:</label>
-        <input type="range" min=0 max=255 name="rmax">
+          <br />
 
-        <br>
+          <label for="gmin">Green Min:</label>
+          <input type="range" min="0" max="255" name="gmin" />
+          <label for="gmax">Green Max:</label>
+          <input type="range" min="0" max="255" name="gmax" />
 
-        <label for="gmin">Green Min:</label>
-        <input type="range" min=0 max=255 name="gmin">
-        <label for="gmax">Green Max:</label>
-        <input type="range" min=0 max=255 name="gmax">
+          <br />
 
-        <br>
-
-        <label for="bmin">Blue Min:</label>
-        <input type="range" min=0 max=255 name="bmin">
-        <label for="bmax">Blue Max:</label>
-        <input type="range" min=0 max=255 name="bmax">
+          <label for="bmin">Blue Min:</label>
+          <input type="range" min="0" max="255" name="bmin" />
+          <label for="bmax">Blue Max:</label>
+          <input type="range" min="0" max="255" name="bmax" />
+        </div>
       </div> -->
+
+      <canvas class="photo"></canvas>
+      <video class="player"></video>
+      <div class="strip"></div>
     </div>
 
-    <canvas class="photo"></canvas>
-    <video class="player"></video>
-    <div class="strip"></div>
-  </div>
+    <audio class="snap" src="./snap.mp3" hidden></audio>
 
-  <audio class="snap" src="./snap.mp3" hidden></audio>
+    <!-- <script src="scripts-FINISHED.js"></script> -->
+    <script>
+      const canvas = document.querySelector("canvas");
+      // 页面加载 -> 请求摄像头 -> 同意的话就把摄像头返回的内容展示到 photo 和 player（镜头）
+      const constraints = { audio: true, video: true };
+      navigator.mediaDevices
+        // 请求摄像头
+        .getUserMedia(constraints)
+        //同意的话就把摄像头返回的内容展示到 player
+        .then(function (showCamera) {
+          const video = document.querySelector("video");
+          video.srcObject = showCamera;
+          video.onloadedmetadata = function (e) {
+            video.play();
+          };
 
-  <script src="scripts.js"></script>
+          // 添加到photo
+          const ctx = canvas.getContext("2d");
+          function drawToCanvas() {
+            [canvas.width, canvas.height] = [
+              video.videoWidth,
+              video.videoHeight,
+            ];
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            requestAnimationFrame(drawToCanvas);
+          }
+          drawToCanvas();
+        })
+        .catch(function (error) {
+          console.log(err.name + ":" + err.message);
+        });
 
-</body>
+      // 点击take photo -> 播放snap + 保存点击这一秒的照片 -> 照片添加到strip下（a标签内img）
+      const SnapAudio = document.querySelector("audio")
+      const takePhotoButton = document.querySelector("button")
+      const photoStrip = document.querySelector(".strip")
+
+      function takePhoto(){
+        // 播放snap
+        SnapAudio.currentTime = 0;
+        SnapAudio.play();
+        
+        // 保存点击这一秒的照片
+        const data = canvas.toDataURL('image/png');
+        
+        const downloadLink = document.createElement('a')
+        downloadLink.href = data;
+        downloadLink.download = 'canvas.png'
+        downloadLink.innerHTML = `<img src="${data}" alt="canvas" />`
+        photoStrip.insertBefore(downloadLink,photoStrip.firstChild)
+      }
+      // 点击照片 弹出保存窗口
+    </script>
+  </body>
 </html>
