@@ -1,41 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Mouse Shadow</title>
-  <link rel="icon" href="https://fav.farm/🔥" />
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mouse Shadow</title>
+    <link rel="icon" href="https://fav.farm/🔥" />
+  </head>
+  <body>
+    <div class="hero">
+      <h1 contenteditable>🔥WOAH!</h1>
+    </div>
 
-  <div class="hero">
-    <h1 contenteditable>🔥WOAH!</h1>
-  </div>
+    <style>
+      html {
+        color: black;
+        font-family: sans-serif;
+      }
 
-  <style>
-  html {
-    color: black;
-    font-family: sans-serif;
-  }
+      body {
+        margin: 0;
+      }
 
-  body {
-    margin: 0;
-  }
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: black;
+      }
 
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: black;
-  }
+      h1 {
+        text-shadow: 10px 10px 0 rgba(0, 0, 0, 1);
+        font-size: 100px;
+      }
+    </style>
 
-  h1 {
-    text-shadow: 10px 10px 0 rgba(0,0,0,1);
-    font-size: 100px;
-  }
-  </style>
+    <script>
+      const hero = document.querySelector(".hero");
+      const text = hero.querySelector("h1");
+      const moveRange = 500;
 
-<script>
-</script>
-</body>
+      function shadowMove(e) {
+        const [height, width] = [hero.offsetHeight, hero.offsetWidth];
+        let [x, y] = [e.offsetX, e.offsetY];
+
+        if (this !== e.target) {
+          x = x + e.target.offsetLeft;
+          y = y + e.target.offsetTop;
+        }
+
+        const xMove = Math.round((x / width) * moveRange - moveRange / 2);
+        const yMove = Math.round((y / height) * moveRange - moveRange / 2);
+
+        text.style.textShadow = `
+        ${xMove}px ${yMove}px 0 rgba(255,0,255,0.7),
+        ${xMove * -1}px ${yMove}px 0 rgba(0, 255, 255,0.7),
+        ${yMove}px ${xMove * -1}px 0 rgba(0, 255, 0,0.7),
+        ${yMove * -1}px ${xMove}px 0 rgba(0, 0,255, 0.7)
+        `;
+      }
+      hero.addEventListener("mousemove", shadowMove);
+    </script>
+  </body>
 </html>
