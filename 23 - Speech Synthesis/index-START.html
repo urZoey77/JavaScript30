@@ -1,42 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Speech Synthesis</title>
-  <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="https://fav.farm/🔥" />
-</head>
-<body>
-
+  <head>
+    <meta charset="UTF-8" />
+    <title>Speech Synthesis</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Pacifico"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="https://fav.farm/🔥" />
+  </head>
+  <body>
     <div class="voiceinator">
-
       <h1>The Voiceinator 5000</h1>
 
       <select name="voice" id="voices">
         <option value="">Select A Voice</option>
       </select>
 
-      <label for="rate">Rate:</label>
-      <input name="rate" type="range" min="0" max="3" value="1" step="0.1">
+      <label for="rate">速度:</label>
+      <input name="rate" type="range" min="0" max="3" value="1" step="0.1" />
 
-      <label for="pitch">Pitch:</label>
+      <label for="pitch">音调:</label>
 
-      <input name="pitch" type="range" min="0" max="2" step="0.1">
-      <textarea name="text">Hello! I love JavaScript 👍</textarea>
+      <input name="pitch" type="range" min="0" max="2" step="0.1" />
+      <textarea name="text">我正在学习前端</textarea>
       <button id="stop">Stop!</button>
       <button id="speak">Speak</button>
-
     </div>
 
-<script>
-  const msg = new SpeechSynthesisUtterance();
-  let voices = [];
-  const voicesDropdown = document.querySelector('[name="voice"]');
-  const options = document.querySelectorAll('[type="range"], [name="text"]');
-  const speakButton = document.querySelector('#speak');
-  const stopButton = document.querySelector('#stop');
-</script>
+    <script>
+      const msg = new SpeechSynthesisUtterance();
+      let voices = [];
+      const voicesDropdown = document.querySelector('[name="voice"]');
+      const options = document.querySelectorAll(
+        '[type="range"], [name="text"]'
+      );
+      const speakButton = document.querySelector("#speak");
+      const stopButton = document.querySelector("#stop");
 
-</body>
+      function voicesList() {
+        voices = this.getVoices();
+        console.log("voices >>> ", voices);
+
+        voicesDropdown.innerHTML = voices
+          .filter((voice) => voice.lang.includes("zh"))
+          .map(
+            (voice) =>
+              `<option value="${voice.name}">${voice.name} (${voice.lang})</option>`
+          )
+          .join("");
+      }
+      speechSynthesis.addEventListener("voiceschanged", voicesList);
+      msg.text = document.querySelector('[name="text"]').value;
+      console.log("msg.text >>>", msg.text);
+
+      speakButton.addEventListener("click", () => {
+        msg.rate = options[0].value;
+        msg.pitch = options[1].value;
+        speechSynthesis.speak(msg);
+      });
+
+      stopButton.addEventListener("click", () => {
+        speechSynthesis.cancel();
+      });
+
+      document.addEventListener("change", (e) => {
+        if ([...options].includes(e.target)) {
+          speechSynthesis.cancel();
+          msg.rate = options[0].value;
+          msg.pitch = options[1].value;
+          speechSynthesis.speak(msg);
+        }
+      });
+    </script>
+  </body>
 </html>
