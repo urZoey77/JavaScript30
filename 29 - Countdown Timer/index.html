@@ -36,32 +36,36 @@
       const timeLeft = document.querySelector(".display__time-left");
       const endTime = document.querySelector(".display__end-time");
       const inputTime = document.querySelector(`#custom`);
-      console.log(inputTime);
+      const webTitle = document.querySelector("title");
 
       controls.addEventListener("click", (e) => {
         if (e.target.matches(".timer__button")) {
-          const clickTime = new Date();
-          console.log(clickTime);
-
           if (isTimer) {
             clearTimeout(isTimer);
           }
-          let time = parseInt(e.target.dataset.time);
-          const futureTime = new Date(clickTime.getTime() + time * 1000);
-          console.log(futureTime);
 
-          endTime.innerText = `Be Back At ${futureTime.getHours()}:${futureTime.getMinutes()}`;
+          let time = parseInt(e.target.dataset.time);
+
+          const clickTime = new Date();
+          const futureTime = new Date(clickTime.getTime() + time * 1000);
+          endTime.innerText = `Be Back At ${futureTime.getHours()}:${String(
+            futureTime.getMinutes()
+          ).padStart(2, "0")}`;
+
           timeCal();
+
           function timeCal() {
             if (time <= 0) {
               clearTimeout(isTimer);
               timeLeft.innerText = "00:00";
               return;
             }
-
-            let minutes = Math.round(time / 60);
+            let minutes = Math.floor(time / 60);
             let secs = time % 60;
             timeLeft.innerText = `${String(minutes).padStart(2, "0")}:${String(
+              secs
+            ).padStart(2, "0")}`;
+            webTitle.innerText = `${String(minutes).padStart(2, "0")}:${String(
               secs
             ).padStart(2, "0")}`;
 
@@ -73,13 +77,17 @@
 
       inputTime.addEventListener("submit", (e) => {
         event.preventDefault();
-        console.log("e in input >>> ", e);
+        const submitTime = new Date();
         if (isTimer) {
           clearTimeout(isTimer);
         }
         let time =
           parseInt(document.querySelector(`input[name="minutes"]`).value) * 60;
-        console.log("time in submit >>> ", time);
+        const futureTime = new Date(submitTime.getTime() + time * 1000);
+        console.log(futureTime);
+        endTime.innerText = `Be Back At ${futureTime.getHours()}:${String(
+          futureTime.getMinutes()
+        ).padStart(2, "0")}`;
         timeCal();
         function timeCal() {
           if (time <= 0) {
@@ -88,9 +96,12 @@
             return;
           }
 
-          let minutes = Math.round(time / 60);
+          let minutes = Math.floor(time / 60);
           let secs = time % 60;
           timeLeft.innerText = `${String(minutes).padStart(2, "0")}:${String(
+            secs
+          ).padStart(2, "0")}`;
+          webTitle.innerText = `${String(minutes).padStart(2, "0")}:${String(
             secs
           ).padStart(2, "0")}`;
           time--;
