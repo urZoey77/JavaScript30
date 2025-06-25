@@ -1,23 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Type Ahead 👀</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="https://fav.farm/🔥" />
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Type Ahead 👀</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="https://fav.farm/🔥" />
+  </head>
+  <body>
+    <form class="search-form">
+      <input type="text" class="search" placeholder="City or State" />
+      <ul class="suggestions">
+        <li>Filter for a city</li>
+        <li>or a state</li>
+      </ul>
+    </form>
+    <script>
+      const endpoint =
+        "https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json";
 
-  <form class="search-form">
-    <input type="text" class="search" placeholder="City or State">
-    <ul class="suggestions">
-      <li>Filter for a city</li>
-      <li>or a state</li>
-    </ul>
-  </form>
-<script>
-const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+      const cities = [];
+      fetch(endpoint)
+        .then((res) => res.json())
+        .then((data) => cities.push(...data));
 
-</script>
-</body>
+      console.log(cities);
+
+      // 用户输入的时候，输入的字母与data中匹配
+      // 匹配的字母的对应数据（city,state）(population)会出现在list中
+      // 并且该字母的背景色是橙色
+
+      const search = document.querySelector(".search");
+      const suggestions = document.querySelector(".suggestions");
+      search.addEventListener("input", (e) => {
+        const usersInput = e.target.value.trim();
+        const inputMatch = new RegExp(usersInput, `i`);
+        const matchData = cities.filter((item) => {
+          return inputMatch.test(item.city) || inputMatch.test(item.state);
+        });
+
+        const dataDisplay = matchData
+          .map((item) => {
+            const hlMatch = new RegExp(usersInput, `gi`);
+            const cityHl = item.city.replace(
+              hlMatch,
+              `<span class="hl">${usersInput}</span>`
+            );
+            const stateHl = item.state.replace(
+              hlMatch,
+              `<span class="hl">${usersInput}</span>`
+            );
+            return `<li><span>${cityHl}, ${stateHl}</span><span>${item.population}</span></li>`;
+          })
+          .join("");
+
+        suggestions.innerHTML = dataDisplay;
+      });
+    </script>
+  </body>
 </html>
